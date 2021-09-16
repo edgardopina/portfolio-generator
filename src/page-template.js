@@ -55,11 +55,11 @@ const generateProjects = projectsArr => {
    `;
 };
 
-module.exports = templateData => {
-	console.log(templateData);
-	// destructure projects and about data from templateData based on their property key names
+
+module.exports = portfolioData => {
+	// destructure projects and about data from portfolioData based on their property key names
 	// uses the 'rest' operator ... to get the rest of thge parameyters inthe header
-	const { projects, about, ...header } = templateData;
+	const { projects, about, ...header } = portfolioData;
 
 	return `
 <!DOCTYPE html> 
