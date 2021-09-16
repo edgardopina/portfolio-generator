@@ -1,3 +1,4 @@
+// array for inquirer.prompt for user-data
 const userQuestions = [
 	/* Pass your questions in here */
 	{
@@ -43,6 +44,8 @@ const userQuestions = [
 		},
 	},
 ];
+
+// array for inquirer.prompt for project-data
 const projectQuestions = [
 	{
 		type: 'input',
@@ -108,29 +111,37 @@ const generatePage = require('./src/page-template.js');
 // destraucturing the modules.export from page-template
 const { writeFile, copyFile } = require('./utils/generate-site.js');
 
+// wrapper for inquirer. Note return inquirer.prompt(...) below that makes promptProject return a Promise
 const promptProject = portfolioData => {
+	// create array of portfolio projects if the array does not exists already
 	if (!portfolioData.projects) {
 		portfolioData.projects = [];
 	}
+
 	console.log(`
 		+++++++++++++++++
 		Add a New Project
 		+++++++++++++++++
 	`);
 
+	// creates Promise by returning inquirer.prompt(...)
 	return inquirer.prompt(projectQuestions).then(projectData => {
-		portfolioData.projects.push(projectData);
+		// recives promise from prompt
+		portfolioData.projects.push(projectData); // pusher projectData into array
 		if (projectData.confirmAddProject) {
-			return promptProject(portfolioData);
+			// validates if there are more projectd to add
+			return promptProject(portfolioData); // recursive call for next project
 		} else {
-			return portfolioData;
+			return portfolioData; // returns (promise) portfolio data
 		}
 	});
 };
 
+// creates Promise by returning inquirer.prompt(...)
 const promptUser = () => {
-	return inquirer.prompt(userQuestions);
+	return inquirer.prompt(userQuestions); // returns (promise) data from promptUser
 };
+
 // 			// the following 'then' is a promise BECAUSE it uses the promise returned by' return inquirer.prompt'
 // 			.then(promptProject)
 // 			.then(portfolioData => {
@@ -150,22 +161,30 @@ const promptUser = () => {
 // };
 
 // compare with the commented code above
-
+// start portfolio generator
 promptUser() // 'returns' (promise) of  promptUser
-	.then(promptProject) // captures the 'returning' data from promptUser() then recursively calls promptProject, which in turn 'returns' the projects' data (promise)
-	.then(portfolioData => { // processes 'returned' data set from promptProject() 
+	// captures the 'returning' data from promptUser() then recursively calls promptProject, which in turn 'returns' the projects' data (promise)
+	.then(userData => {
+		return promptProject(userData);
+	})
+	.then(portfolioData => {
+		// processes 'returned' data set from promptProject()
 		return generatePage(portfolioData); // 'returns' (promise) the finished HTML template
 	})
-	.then(pageHTML => { // processes 'returned' HTML template 
+	.then(pageHTML => {
+		// processes 'returned' HTML template
 		return writeFile(pageHTML); // processes 'writeFile' which was written as a wrapper Promise object around fs.writeFile and 'returns' (promise) its settled state: 'resolved' or 'rejected'
 	})
-	.then(writeFileResponse => { // process the 'resolve' response (promise) from writeFile and then ....
+	.then(writeFileResponse => {
+		// process the 'resolve' response (promise) from writeFile and then ....
 		console.log(writeFileResponse);
 		return copyFile(); //  processes 'copyFile' which was written as a wrapper Promise object around fs.copyFile and 'returns' (promise) its settled state: 'resolved' or 'rejected'
 	})
-	.then(copyFileResponse => { // process the 'resolve' response (promise) from copyFile and then ....
+	.then(copyFileResponse => {
+		// process the 'resolve' response (promise) from copyFile and then ....
 		console.log(copyFileResponse); // logs sucess!
 	})
-	.catch(err => { // otherwise process error (rejected) from any of the promises above
+	.catch(err => {
+		// otherwise process error (rejected) from any of the promises above
 		console.log(err);
 	});

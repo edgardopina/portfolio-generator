@@ -2,7 +2,8 @@ const fs = require('fs');
 
 const writeFile = fileContent => {
 	return new Promise((resolve, reject) => {
-		fs.writeFile('./dist/index.html', fileContent, err => {
+		// fs.writeFile('./dist/index.html', fileContent, err => {
+		fs.writeFile('./index.html', fileContent, err => {
 			// if there is an error, reject the promise and send the error to the Promise's `.catch()` method
 			if (err) {
 				reject(err);
@@ -44,4 +45,6 @@ const copyFile = () => {
 // 	copyFile: copyFile,
 // };
 
+// using shorthand property names
 module.exports = {writeFile, copyFile};
+

@@ -1,4 +1,4 @@
-// create the about section element
+// create the about section element. it checks for 'aboutText' === true to generate the 'about' <section> element
 const generateAbout = aboutText => {
 	if (!aboutText) {
 		return '';
@@ -12,6 +12,21 @@ const generateAbout = aboutText => {
    `;
 };
 
+
+// generates a html <section> FOR EACH ELEMENT of projectsArr.
+// FIRST: FILTERING 
+// for 'featured' projects, filters projects with  the FILTERING FUNCTION 'feature' === true (feature => feature)
+// for 'non-featured' projects, filters projects with  the FILTERING FUNCTION 'feature' === false (feature => !feature)
+// SECOND: MAPING 
+// creates a NEW array (to prevent destroying the original one - because it needs to be processed twice) using an arrow
+// function with four parameters - { name, description, languages, link } - coming from the projectsArr. 
+// As you can see, the arrow function creates AND RETURNS a new array element that is a <div> section by using 
+// the template literal ` `.
+// Inside the <div> element, we can see that the property 'languages' is an array too; therefore we use the '.join'
+// method to return a new string by concatenating all of the elements in an array (or an array-like object), separated
+// by comma.
+// THIRD: JOIN ALL THE <div> elements
+// we use th 'join' method to join all the <div> elements together.align-center
 const generateProjects = projectsArr => {
 	return `
       <section class="my-3" id="portfolio">
@@ -56,11 +71,15 @@ const generateProjects = projectsArr => {
 };
 
 
+// local module export of arrow function; 
+// function name: as defined in calling program in local module require
+// parameter: portfolioData
 module.exports = portfolioData => {
-	// destructure projects and about data from portfolioData based on their property key names
-	// uses the 'rest' operator ... to get the rest of thge parameyters inthe header
+	// destructure projects and about data from portfolioData based on their property key NAMES
+	// uses the 'rest' operator '...' to get the rest of the parameters in the header variable
 	const { projects, about, ...header } = portfolioData;
 
+   // promise that returns the basic HTML template; note the ${variable} substitution expressions
 	return `
 <!DOCTYPE html> 
 <html lang='en'> 
